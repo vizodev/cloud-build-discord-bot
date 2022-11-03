@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "serve",
+			"problemMatcher": [
+				"$tsc-watch"
+			],
+			"label": "npm: serve",
+			"detail": "nodemon --config ./nodemon.json",
+			"isBackground": true
+		}
+	]
+}
