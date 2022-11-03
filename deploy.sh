@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 echo "Exporting env vars..."
 set -a
 . ./.env
@@ -19,6 +19,7 @@ gcloud services enable eventarc.googleapis.com \
     pubsub.googleapis.com \
     run.googleapis.com \
     workflows.googleapis.com \
+    secretmanager.googleapis.com \
     --project $PROJECT_ID
 
 
@@ -41,6 +42,21 @@ echo "Creating Pub/Sub topic..."
 
 gcloud pubsub topics create cloud-builds --project $PROJECT_ID
 
+
+
+echo "Creating Secret with Bot Token"
+
+if ! [ -f "./key.txt" ]; then
+    echo "Make sure to create the key file with the token"
+    exit
+fi
+
+gcloud secrets create discord-token \
+    --replication-policy="automatic" \
+    --project $PROJECT_ID
+gcloud secrets versions add discord-token \
+    --data-file="key.txt" \
+    --project $PROJECT_ID
 echo "Deploying bot on Cloud Run..."
 
 
@@ -55,7 +71,7 @@ gcloud run deploy discord-bot \
     --cpu 1 \
     --memory 512Mi \
     --allow-unauthenticated \
-    --set-env-vars DISCORD_TOKEN=$DISCORD_TOKEN,DISCORD_CHANNEL_ID=$DISCORD_CHANNEL_ID
+    --set-env-vars DISCORD_CHANNEL_ID=$DISCORD_CHANNEL_ID,PROJECT_NUMBER=$project_number
 
 echo "Creating trigger on EventArc..."
 
