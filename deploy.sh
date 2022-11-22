@@ -57,20 +57,26 @@ gcloud secrets create discord-token \
 gcloud secrets versions add discord-token \
     --data-file="key.txt" \
     --project $PROJECT_ID
+
+gcloud secrets add-iam-policy-binding discord-token \
+    --member=serviceAccount:$project_number-compute@developer.gserviceaccount.com \
+    --role=roles/secretmanager.secretAccessor \
+    --project $PROJECT_ID
+
+
 echo "Deploying bot on Cloud Run..."
 
 
 gcloud run deploy discord-bot \
     --project $PROJECT_ID \
-    --image gcr.io/$PROJECT_ID/discord-bot \
+    --image europe-west1-docker.pkg.dev/vizodev/discord-bot/discord-bot \
     --region europe-west1 \
     --platform managed \
-    --max-instances 10 \
+    --max-instances 5 \
     --min-instances 0 \
     --concurrency 160 \
     --cpu 1 \
     --memory 512Mi \
-    --allow-unauthenticated \
     --set-env-vars DISCORD_CHANNEL_ID=$DISCORD_CHANNEL_ID,PROJECT_NUMBER=$project_number
 
 echo "Creating trigger on EventArc..."
