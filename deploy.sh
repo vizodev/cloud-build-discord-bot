@@ -64,6 +64,19 @@ gcloud secrets add-iam-policy-binding discord-token \
     --project $PROJECT_ID
 
 
+gcloud secrets add-iam-policy-binding discord-token \
+    --member=serviceAccount:$project_number-compute@developer.gserviceaccount.com \
+    --role=roles/eventarc.admin \
+    --project $PROJECT_ID
+
+
+gcloud secrets add-iam-policy-binding discord-token \
+    --member=serviceAccount:$project_number-compute@developer.gserviceaccount.com \
+    --role=roles/iam.serviceAccountUser \
+    --project $PROJECT_ID
+
+
+
 echo "Deploying bot on Cloud Run..."
 
 
@@ -77,6 +90,7 @@ gcloud run deploy discord-bot \
     --concurrency 160 \
     --cpu 1 \
     --memory 512Mi \
+    --no-allow-unauthenticated \
     --set-env-vars DISCORD_CHANNEL_ID=$DISCORD_CHANNEL_ID,PROJECT_NUMBER=$project_number
 
 echo "Creating trigger on EventArc..."
@@ -87,4 +101,5 @@ gcloud eventarc triggers create discord-bot-trigger \
     --destination-run-region=europe-west1 \
     --event-filters="type=google.cloud.pubsub.topic.v1.messagePublished" \
     --transport-topic=projects/$PROJECT_ID/topics/cloud-builds \
-    --project $PROJECT_ID
+    --project $PROJECT_ID \
+    --service-account=$project_number-compute@developer.gserviceaccount.com
