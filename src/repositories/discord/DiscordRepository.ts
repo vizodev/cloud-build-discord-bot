@@ -1,5 +1,5 @@
 import { Singleton, InjectValue } from "typescript-ioc";
-import { Client, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, TextBasedChannel } from "discord.js";
+import { Client, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, TextBasedChannel, TextChannel } from "discord.js";
 import { format } from "date-fns";
 @Singleton
 export class DiscordRepository {
@@ -15,7 +15,7 @@ export class DiscordRepository {
         if (!channelId) throw new Error("DISCORD_CHANNEL_ID variable must be set");
         const channel = (await this.client.channels.fetch(
             channelId
-        )) as TextBasedChannel;
+        )) as TextChannel;
 
         await channel.send({ embeds: [embedBuilder.toJSON()], components: [(actionRow.toJSON() as any)] })
     }
