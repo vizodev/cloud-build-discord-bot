@@ -12,8 +12,8 @@ export class MainService {
     async handleGCPMessage(message: {message: {data: string}}) {
         try {
             const data = JSON.parse(Buffer.from(message.message.data, "base64").toString());
-            const { status, projectId, startTime, finishTime, steps, logUrl } = data;
-            return this._repo.handleMessage(status, projectId, startTime, finishTime, steps, logUrl)
+            const { status, projectId, startTime, finishTime, steps, logUrl, tags } = data;
+            return this._repo.handleMessage(status, projectId, startTime, finishTime, steps, logUrl, tags)
         } catch (error) {
             console.error(error);
         }
