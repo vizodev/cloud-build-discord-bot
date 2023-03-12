@@ -3,6 +3,8 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse, fetchMiddlewares } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { GithubController } from './../app/github/gitubController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { MainController } from './../app/main/mainController';
 import type { RequestHandler } from 'express';
 import * as express from 'express';
@@ -20,6 +22,31 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
+        app.post('/github',
+            ...(fetchMiddlewares<RequestHandler>(GithubController)),
+            ...(fetchMiddlewares<RequestHandler>(GithubController.prototype.handleGithubEvent)),
+
+            function GithubController_handleGithubEvent(request: any, response: any, next: any) {
+            const args = {
+                    event: {"in":"body","name":"event","required":true,"dataType":"any"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new GithubController();
+
+
+              const promise = controller.handleGithubEvent.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/',
             ...(fetchMiddlewares<RequestHandler>(MainController)),
             ...(fetchMiddlewares<RequestHandler>(MainController.prototype.handleGCPMessage)),
@@ -108,22 +135,22 @@ export function RegisterRoutes(app: express.Router) {
                 case 'request':
                     return request;
                 case 'query':
-                    return validationService.ValidateParam(args[key], request.query[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    return validationService.ValidateParam(args[key], request.query[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                 case 'path':
-                    return validationService.ValidateParam(args[key], request.params[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    return validationService.ValidateParam(args[key], request.params[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                 case 'header':
-                    return validationService.ValidateParam(args[key], request.header(name), name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    return validationService.ValidateParam(args[key], request.header(name), name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                 case 'body':
-                    return validationService.ValidateParam(args[key], request.body, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    return validationService.ValidateParam(args[key], request.body, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                 case 'body-prop':
-                    return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, 'body.', {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, 'body.', {"noImplicitAdditionalProperties":"silently-remove-extras"});
                 case 'formData':
                     if (args[key].dataType === 'file') {
-                        return validationService.ValidateParam(args[key], request.file, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                        return validationService.ValidateParam(args[key], request.file, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                     } else if (args[key].dataType === 'array' && args[key].array.dataType === 'file') {
-                        return validationService.ValidateParam(args[key], request.files, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                        return validationService.ValidateParam(args[key], request.files, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                     } else {
-                        return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                        return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"silently-remove-extras"});
                     }
                 case 'res':
                     return responder(response);

@@ -20,6 +20,24 @@ export class DiscordRepository {
         await channel.send({ embeds: [embedBuilder.toJSON()], components: [(actionRow.toJSON() as any)] })
     }
 
+
+    async handleGithubEvent(artifactsUrl: string, repoName: string, commitMessage: string) {
+        const embedBuilder = new EmbedBuilder().setAuthor({name: `New build available for project ${repoName}`, iconURL: "https://images.emojiterra.com/twitter/v13.1/512px/1f6e0.png"})
+            .setDescription(`Last commit message: \`${commitMessage}\``);
+        
+        
+        const actionRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId(`artifact-${artifactsUrl}`).setLabel("Generate Download URL").setStyle(ButtonStyle.Primary)
+        );
+        const channelId = process.env["DISCORD_CHANNEL_ID"];
+        if (!channelId) throw new Error("DISCORD_CHANNEL_ID variable must be set");
+        const channel = (await this.client.channels.fetch(
+            channelId
+        )) as TextChannel;
+
+        await channel.send({embeds: [embedBuilder.toJSON()], components: [(actionRow.toJSON() as any)]})
+    }
+
     getTitleForEmbed(data: { status: string, projectId: string }) {
         const { status, projectId } = data;
         let name;
